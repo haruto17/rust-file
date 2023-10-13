@@ -1,4 +1,3 @@
-use std::fmt::write;
 use std::fs;
 use std::fs::File;
 use std::fs::OpenOptions;
@@ -9,12 +8,27 @@ fn create_file(name: &String) {
     println!("File created successfully");
 }
 
-fn read_file(name: String) {}
+fn read_text(name: &String) {
+    let mut file = File::open(name).expect("File not found!");
 
-fn write_file(name: &String, text: String) {
-    let mut file = OpenOptions::new().append(true).open(name).unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)
+        .expect("something went wrong reading the file");
 
-    file.write_all(text.as_bytes()).unwrap();
+    println!("{}", contents);
+}
+
+fn write_text(name: &String, text: String) {
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open(name)
+        .expect("File not found!");
+
+    file.write_all(text.as_bytes()).expect("File write failed!");
+}
+
+fn rename_file(from: &String, to: String) {
+    fs::rename(from, to).expect("File rename failed!");
 }
 
 fn delete_file(name: &String) {
@@ -24,9 +38,13 @@ fn delete_file(name: &String) {
 
 fn main() {
     let file_name: String = "Hello.txt".to_string();
-    // create_file(&file_name);
+    create_file(&file_name);
 
-    write_file(&file_name, "asdfasdf".to_string());
+    write_text(&file_name, "Hello, World!!".to_string());
+
+    read_text(&file_name);
+
+    rename_file(&file_name, "HW.txt".to_string());
 
     // delete_file(&file_name);
 }
